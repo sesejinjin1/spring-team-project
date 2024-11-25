@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.DesignMapper">
+	<!--디자인목록-->
+	<select id="selectDesign" parameterType="hashmap" resultType="com.example.furnature.model.Design">
+		SELECT 
+		    COUNT(L.DESIGN_NO) AS COUNT,
+		    D.USER_ID,                    
+		    D.DESIGN_TITLE,                
+		    D.DESIGN_NO,
+		    D.DESIGN_IMG_PATH,
+		    D.DESIGN_CHOICE                 
+		FROM
+		    TBL_DESIGN D
+		LEFT JOIN 
+		    TBL_DESIGN_LIKE L ON D.DESIGN_NO = L.DESIGN_NO
+		GROUP BY 
+		    D.DESIGN_NO, 
+		    D.USER_ID, 
+		    D.DESIGN_TITLE,
+		    D.DESIGN_IMG_PATH,
+		    D.DESIGN_CHOICE
+	</select>
+	<!--디자인 디테일-->
+	<select id="designDetail" parameterType="hashmap" resultType="com.example.furnature.model.Design">
+		SELECT 
+		    *
+		FROM
+			TBL_DESIGN
+		WHERE DESIGN_NO = #{designNo}
+	</select>
+	
+	<!--디자인 추천 취소-->
+	<delete id="designDelete" parameterType="hashmap">
+		DELETE 
+		FROM
+			TBL_DESIGN
+		WHERE DESIGN_NO = #{designNo}
+	</delete>
+	
+	<!--상품 카운트-->
+	<select id="desginCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT 
+		FROM TBL_DESIGN
+		WHERE 1=1
+		 <if test="keyword != null and keyword !=''">
+	        AND P.PRODUCT_NAME LIKE '%' ||  #{keyword} || '%'
+	     </if>
+	</select>	
+	
+	<!--디자인추천체크-->
+	<select id="designRecommend" parameterType="hashmap" resultType="int">
+		SELECT 
+		    COUNT(*) AS CNT
+		FROM
+			TBL_DESIGN_LIKE
+		WHERE DESIGN_NO = #{designNo} AND USER_ID = #{userId}
+		
+	</select>
+	
+	<!--디자인 추천 취소-->
+	<delete id="recommendCancel" parameterType="hashmap">
+		DELETE 
+		FROM
+			TBL_DESIGN_LIKE
+		WHERE DESIGN_NO = #{designNo} AND USER_ID = #{userId}
+	</delete>
+	<!--디자인추천-->
+	<insert id="recommend" parameterType="hashmap">
+		INSERT INTO
+		TBL_DESIGN_LIKE VALUES(LIKE_NO_SEQ.NEXTVAL,#{designNo},#{userId})
+	</insert>
+	
+	<!--디자인 추가-->
+	<insert id="insertDesign" parameterType="hashmap" useGeneratedKeys="true" keyProperty="designNo" keyColumn="DESIGN_NO">
+		INSERT INTO
+		TBL_DESIGN(DESIGN_NO,USER_ID,DESIGN_TITLE,DESIGN_CONTENTS,DESIGN_CHOICE,DESIGN_CDATETIME)
+		VALUES(DESIGN_NO_SEQ.NEXTVAL,#{userId},#{designTitle},#{designContents},'N',SYSDATE)
+	</insert>
+	
+	<!--디자인 첨부파일 추가-->
+	<update id="insertDesignFile" parameterType="hashmap">
+		UPDATE TBL_DESIGN
+		SET DESIGN_IMG_PATH = #{filePath}, DESIGN_IMG_NAME = #{fileName}
+		WHERE DESIGN_NO = #{designNo}
+	</update>
+	
+	<!--디자인 확정-->
+	<update id="designSelect" parameterType="hashmap">
+		UPDATE TBL_DESIGN
+		SET DESIGN_CHOICE= 'Y'
+		WHERE DESIGN_NO = #{designNo}
+	</update>
+	
+	
+</mapper>

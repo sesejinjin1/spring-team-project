@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.ProductMapper">
+
+	<!--상품 리스트-->	
+	<select id="productList" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT *
+	    FROM TBL_PRODUCT P
+	    INNER JOIN TBL_PRODUCT_CATE PC ON P.PRODUCT_CATE1 = PC.CATE_NO
+	    INNER JOIN TBL_PRODUCT_IMG PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+	    WHERE 1=1
+	    <if test="keyword != null and keyword !=''">
+	        AND P.PRODUCT_NAME LIKE '%' ||  #{keyword} || '%'
+	    </if>
+	    <if test="width != null and width != ''">
+	        AND P.PRODUCT_WIDTH BETWEEN #{width}-100 AND #{width}+100
+	    </if>
+	    <if test="depth != null and depth != ''">
+	        AND P.PRODUCT_LENGTH BETWEEN #{depth}-100 AND #{depth}+100
+	    </if>
+	    <if test="height != null and height != ''">
+	        AND P.PRODUCT_HEIGHT BETWEEN #{height}-100 AND #{height}+100
+	    </if>
+	    <if test="cateNum != null and cateNum != ''">
+	        AND (P.PRODUCT_CATE1 = #{cateNum} OR P.PRODUCT_CATE2 = #{cateNum})
+	    </if>
+	    ORDER BY P.PRODUCT_NO
+	    OFFSET #{startIndex} ROWS FETCH FIRST #{outputNumber} ROWS ONLY
+	</select>
+	
+	<!--상품 카운트-->
+	<select id="productCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT 
+		FROM TBL_PRODUCT P
+		INNER JOIN TBL_PRODUCT_CATE PC ON P.PRODUCT_CATE1 = PC.CATE_NO
+		INNER JOIN TBL_PRODUCT_IMG PI ON P.PRODUCT_NO = PI.PRODUCT_NO
+		WHERE 1=1
+		 <if test="keyword != null and keyword !=''">
+	        AND P.PRODUCT_NAME LIKE '%' ||  #{keyword} || '%'
+	     </if>
+		 <if test="width != null and width != ''">
+	        AND P.PRODUCT_WIDTH BETWEEN #{width}-100 AND #{width}+100
+	    </if>
+	    <if test="depth != null and depth != ''">
+	        AND P.PRODUCT_LENGTH BETWEEN #{depth}-100 AND #{depth}+100
+	    </if>
+	    <if test="height != null and height != ''">
+	        AND P.PRODUCT_HEIGHT BETWEEN #{height}-100 AND #{height}+100
+	    </if>
+	     <if test="cateNum != null and cateNum != ''">
+	        AND (P.PRODUCT_CATE1 = #{cateNum} OR P.PRODUCT_CATE2 = #{cateNum})
+	    </if>
+	</select>	
+	<!-- 상품 이미지 url 모든 리스트 -->
+	<select id="selectProductImg" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT * FROM
+		TBL_PRODUCT_IMG
+	</select>
+	
+	<!-- 상품 페이지에서 클릭시 상세페이지에서 상품번호에 맞는 이미지 불러오기 -->
+	<select id="selectProductDetail" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT * FROM 
+		TBL_PRODUCT P INNER JOIN TBL_PRODUCT_IMG I 
+		ON P.PRODUCT_NO = I.PRODUCT_NO 
+		WHERE P.PRODUCT_NO = #{productNo}
+	</select>
+
+	
+	<!--카테고리 리스트-->
+	<select id="cateList" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT *
+		FROM TBL_PRODUCT_CATE
+	</select>
+	
+	<!-- 상품 결제 데이터 인서트 -->
+	<insert id="productOrder" parameterType="hashmap">
+        INSERT INTO TBL_PRODUCT_ORDER (PAY_NO, ORDER_NAME, PRODUCT_NO, USER_ID,ORDER_SIZE, ORDER_COUNT, PRODUCT_PRICE, ORDER_CATE, DELIVERY_CATE)
+        VALUES (PAY_NO_SEQ.NEXTVAL, #{orderId}, #{productNo}, #{userId},#{orderSize}, #{orderCount}, #{sizePrice}, '상품', 0)
+	</insert>
+	<!--리뷰 리스트-->
+	<select id="productReview" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT R.*, ROUND(A.AVG_RATING, 1) AS AVG_RATING
+		FROM (
+		    SELECT *
+		    FROM TBL_PRODUCT_REVIEW 
+		    WHERE PRODUCT_NO = #{productNo}
+		    ORDER BY REVIEW_NO 
+		    OFFSET #{startIndex} ROWS FETCH FIRST #{outputNumber} ROWS ONLY
+		) R
+		LEFT JOIN (
+		    SELECT ROUND(AVG(REVIEW_RATING), 1) AS AVG_RATING
+		    FROM TBL_PRODUCT_REVIEW 
+		    WHERE PRODUCT_NO = #{productNo}
+		) A ON 1=1
+	</select>
+	<!--리뷰 카운-->
+	<select id="reviewCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) FROM TBL_PRODUCT_REVIEW
+        WHERE PRODUCT_NO = #{productNo}
+	</select>
+	
+	<!--리뷰 작성-->
+	<insert id="reviewInsert" parameterType="hashmap" useGeneratedKeys="true" keyProperty="reviewNo" keyColumn="REVIEW_NO">
+		INSERT INTO TBL_PRODUCT_REVIEW 
+		(REVIEW_NO,
+		 REVIEW_TITLE,
+		 REVIEW_CONTENTS,
+		 USER_ID,
+		 PRODUCT_NO,
+		 REVIEW_CDATETIME,
+		 REVIEW_UDATETIME,
+		 REVIEW_RATING)
+		VALUES (TBL_PRODUCT_REVIEW_NO_SEQ.NEXTVAL, #{reviewTitle}, #{reviewContents}, #{userId}, #{productNo}, SYSDATE, SYSDATE, #{reviewRating})
+	</insert>
+	
+	<!--리뷰 이미지 추가-->
+	<update id="insertReviewImg" parameterType="hashmap">
+		UPDATE TBL_PRODUCT_REVIEW
+		SET REVIEW_IMG_PATH = #{filePath}, REVIEW_IMG_NAME = #{fileName}
+		WHERE REVIEW_NO = #{reviewNo}
+	</update>
+	<!--상품 구매시 마일리지 사용-->
+	<insert id="useMileage" parameterType="hashmap">
+        INSERT INTO TBL_MILEAGE
+        VALUES(MILEAGE_SEQ.NEXTVAL, #{userId}, '상품구매', #{pointPay}, '사용', SYSDATE)
+	</insert>
+	<!--상품 구매시 마일리지 적립-->
+	<insert id="saveMileage" parameterType="hashmap">
+        INSERT INTO TBL_MILEAGE
+		VALUES(MILEAGE_SEQ.NEXTVAL, #{userId}, '상품구매', #{mileage}, '적립', SYSDATE)
+	</insert>
+	<!-- 리뷰 수정시 해당 리뷰 불러오기-->
+	<select id="reviewInfo" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT * FROM 
+		TBL_PRODUCT_REVIEW WHERE REVIEW_NO = #{reviewNo}
+	</select>
+	<!-- 리뷰 삭제-->
+	<delete id="deleteReview" parameterType="hashmap">
+		DELETE FROM TBL_PRODUCT_REVIEW 
+		WHERE REVIEW_NO = #{reviewNo}
+	</delete>
+	<!-- 리뷰 수정-->
+	<update id="updateReview" parameterType="hashmap">
+	    UPDATE TBL_PRODUCT_REVIEW 
+	    SET REVIEW_TITLE = #{reviewTitle}, REVIEW_CONTENTS = #{reviewContents}, 
+	    REVIEW_RATING = #{reviewRating}, REVIEW_UDATETIME = SYSDATE 
+	    WHERE REVIEW_NO = #{reviewNo}
+	</update>
+	<!--장바구니 쿼리-->
+	<insert id="insertCart" parameterType="hashmap">
+        INSERT INTO TBL_PRODUCT_CART 
+   		VALUES (CART_NO_SEQ.NEXTVAL, #{productNo}, #{userId}, #{selectedSize}, #{price}, #{count}, SYSDATE, SYSDATE)
+	</insert>
+	<!-- 추천 상품 리스트-->
+	<select id="recommend" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+	   	SELECT P.PRODUCT_NO, PRODUCT_NAME, PRODUCT_CATE1, PRODUCT_CATE2, PRODUCT_PRICE, I.PRODUCT_THUMBNAIL
+	    FROM TBL_PRODUCT P
+	    LEFT JOIN TBL_PRODUCT_IMG I ON P.PRODUCT_NO = I.PRODUCT_NO
+	    WHERE 
+	    <if test="cate1 != null and cate1 != ''">
+	        PRODUCT_CATE1 = #{cate1}
+	        <if test="cate2 != null and cate2 != ''">
+	            OR
+	        </if>
+	    </if>
+	    <if test="cate2 != null and cate2 != ''">
+	        PRODUCT_CATE2 = #{cate2}
+	    </if>
+	    OFFSET 0 ROWS FETCH FIRST 4 ROWS ONLY
+	</select>
+	<!--상품구매한 유저 정보 (리뷰작성위해)-->
+	<select id="searchUser" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT O.ORDER_ID, U.USER_ID, MIN(O.ORDER_DATE) AS ORDER_DATE, O.PRODUCT_NO 
+		FROM TBL_USER U 
+		INNER JOIN TBL_PRODUCT_ORDER O 
+		ON U.USER_ID = O.USER_ID
+		WHERE O.PRODUCT_NO = #{productNo} AND U.USER_ID = #{sessionId}
+		GROUP BY O.ORDER_ID, U.USER_ID, O.PRODUCT_NO
+	</select>
+	
+	<!--커스텀-->
+	<insert id="productCustom" parameterType="hashmap">
+		INSERT INTO
+		TBL_CUSTOM
+		VALUES(CUSTOM_NO_SEQ.NEXTVAL,#{productNo},#{productName},#{userId},'N')
+	</insert>
+
+	<!--커스텀취소-->
+	<delete id="productCustomCancel" parameterType="hashmap">
+		DELETE FROM
+			TBL_CUSTOM
+		WHERE PRODUCT_NO = #{productNo} AND USER_ID = #{userId}
+	</delete>
+	
+	<!--커스텀체크-->
+	<select id="productCustomCheck" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT
+		FROM TBL_CUSTOM
+		WHERE PRODUCT_NO = #{productNo} AND USER_ID = #{userId}
+	</select>
+	
+	<!--커스텀데이터확인-->
+	<select id="customCheck" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT *
+		FROM TBL_CUSTOM
+		WHERE PRODUCT_NO = #{productNo} AND USER_ID = #{userId}
+	</select>
+	<!--리뷰 중복작성 카운트-->
+	<select id="reviewInsertCnt" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT FROM TBL_PRODUCT_REVIEW
+		WHERE USER_ID = #{userId} and PRODUCT_NO = #{productNo}
+	</select>
+	
+</mapper>

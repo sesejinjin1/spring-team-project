@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.QnaMapper">
+	<select id="QnaList" parameterType="hashmap" resultType="com.example.furnature.model.Qna"> 
+		SELECT Q.*,U.USER_NAME,C.COUNT AS COMMENT_COUNT
+		FROM TBL_QNA Q
+		INNER JOIN TBL_USER U ON Q.USER_ID = U.USER_ID
+		LEFT JOIN
+		(SELECT QNA_NO,COUNT(*) AS COUNT
+			FROM TBL_QNA_COMMENT
+			GROUP BY QNA_NO
+		) C ON Q.QNA_NO = C.QNA_NO
+		WHERE 1=1
+		<if test="searchData != null and searchData !=''">
+	        AND (Q.QNA_TITLE LIKE '%' ||  #{searchData} || '%' OR U.USER_NAME LIKE '%' ||  #{searchData} || '%')
+	    </if>
+		<if test="category == 'cateTitle'">
+	        AND Q.QNA_TITLE LIKE '%' ||  #{searchData} || '%'
+	    </if>
+		<if test="category == 'cateUser'">
+	        AND USER_NAME LIKE '%' ||  #{searchData} || '%'
+	    </if>
+		ORDER BY Q.QNA_NO DESC
+		OFFSET #{startIndex} ROWS FETCH FIRST #{outputNumber} ROWS ONLY
+	</select>
+	<select id="listCount" parameterType="hashmap" resultType="int">
+		SELECT COUNT(*) AS CNT
+		FROM TBL_QNA Q
+		INNER JOIN TBL_USER U ON Q.USER_ID = U.USER_ID
+		WHERE 1=1
+		<if test="searchData != null and searchData !=''">
+	        AND (Q.QNA_TITLE LIKE '%' ||  #{searchData} || '%' OR U.USER_NAME LIKE '%' ||  #{searchData} || '%')
+	    </if>
+		<if test="category == 'cateTitle'">
+	        AND QNA_TITLE LIKE '%' ||  #{searchData} || '%'
+	    </if>
+		<if test="category == 'cateUser'">
+	        AND USER_NAME LIKE '%' ||  #{searchData} || '%'
+	    </if>
+	</select>
+	<select id="QnaView" parameterType="hashmap" resultType="com.example.furnature.model.Qna"> 
+		SELECT *
+		FROM TBL_QNA Q
+		INNER JOIN TBL_USER U ON Q.USER_ID = U.USER_ID
+		WHERE QNA_NO = #{qnaNo}
+	</select>
+	
+	<select id="commentView" parameterType="hashmap" resultType="com.example.furnature.model.Qna">
+		SELECT *
+		FROM TBL_QNA_COMMENT Q
+		INNER JOIN TBL_USER U ON Q.USER_ID = U.USER_ID
+		WHERE QNA_NO = #{qnaNo}
+		ORDER BY COMMENT_NO ASC
+	</select>
+	<insert id="commentRegist" parameterType="hashmap">
+		INSERT
+		INTO TBL_QNA_COMMENT
+		VALUES(SEQ_COMMENT_NO.NEXTVAL,#{qnaNo},#{userId},#{comments}, SYSDATE + INTERVAL '9' HOUR, SYSDATE + INTERVAL '9' HOUR)
+	</insert>
+	<insert id="qnaRegist" parameterType="hashmap" useGeneratedKeys="true" keyProperty="qnaNo" keyColumn="QNA_NO">
+		INSERT
+		INTO TBL_QNA(QNA_NO,USER_ID,QNA_TITLE,QNA_CONTENTS,QNA_CATEGORY,QNA_COUNT,CDATETIME,UDATETIME)
+		VALUES(QNA_SEQ.NEXTVAL,#{userId},#{qnaTitle},#{qnaContents},1,0, SYSDATE + INTERVAL '9' HOUR, SYSDATE + INTERVAL '9' HOUR)
+	</insert>
+	<update id="fileRegist" parameterType="hashmap">
+		UPDATE TBL_QNA
+		SET QNA_FILE_PATH = #{qnaFilePath}
+		WHERE QNA_NO = #{qnaNo}
+	</update>
+	<update id="qnaUpdate" parameterType="hashmap">
+		UPDATE TBL_QNA
+		SET QNA_TITLE = #{qnaTitle}, QNA_CONTENTS = #{qnaContents}
+		WHERE QNA_NO = #{qnaNo}
+	</update>
+	<delete id="commentDelete" parameterType="hashmap">
+		DELETE 
+		FROM TBL_QNA_COMMENT
+		WHERE COMMENT_NO = #{commentNo}
+	</delete>
+	<delete id="qnaDelete" parameterType="hashmap">
+		DELETE 
+		FROM TBL_QNA
+		WHERE QNA_NO = #{qnaNo}
+	</delete>
+	<delete id="commentAllDelete" parameterType="hashmap">
+		DELETE 
+		FROM TBL_QNA_COMMENT
+		WHERE QNA_NO = #{qnaNo}
+	</delete>
+	<update id="commentUpdate" parameterType="hashmap">
+		UPDATE TBL_QNA_COMMENT
+		SET COMMENT_CONTENTS = #{commentContents}
+		WHERE COMMENT_NO = #{commentNo}
+	</update>
+
+</mapper>

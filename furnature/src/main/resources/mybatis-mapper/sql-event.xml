@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.EventMapper">
+	<select id="selectRoulette" parameterType="hashmap" resultType="com.example.furnature.model.Event">
+		SELECT EVENT_ROUL
+		FROM TBL_USER
+		WHERE USER_ID = #{sessionId}
+	</select>
+	
+	<update id="updateRoulette" parameterType="hashmap">
+		UPDATE TBL_USER
+		SET EVENT_ROUL = #{roulette}
+		WHERE USER_ID = #{sessionId}
+	</update>
+	
+	<insert id="insertMileage" parameterType="hashmap">
+		INSERT INTO TBL_MILEAGE
+		VALUES(MILEAGE_SEQ.NEXTVAL, #{sessionId}, '룰렛이벤트', #{mileage}, '적립', SYSDATE + INTERVAL '9' HOUR)
+	</insert>
+	
+	<select id="selectAuctionStatus" parameterType="hashmap" resultType="com.example.furnature.model.Event">
+		SELECT ROUND(START_DAY - (SYSDATE + INTERVAL '9' HOUR), 16) START_DAY, ROUND(END_DAY - (SYSDATE + INTERVAL '9' HOUR), 16) END_DAY, AUCTION_NO
+		FROM TBL_AUCTION
+		ORDER BY AUCTION_NO DESC
+	</select>
+	
+	<update id="updateStatus" parameterType="hashmap">		 
+		UPDATE TBL_AUCTION
+	    SET AUCTION_STATUS = CASE AUCTION_NO
+	        <foreach collection="statusInfo" item="item" separator=" ">
+	            WHEN #{item.auctionNo} THEN #{item.status}
+	        </foreach>
+	        ELSE AUCTION_STATUS
+	    END
+	    WHERE AUCTION_NO IN (
+	        <foreach collection="statusInfo" item="item" separator=",">
+	            #{item.auctionNo}
+	        </foreach>
+	    )
+	</update>
+	
+	<insert id="insertAuction" parameterType="hashmap" useGeneratedKeys="true" keyProperty="auctionNo" keyColumn="AUCTION_NO">
+		INSERT INTO TBL_AUCTION
+		VALUES (AUCTION_SEQ.NEXTVAL, #{title}, #{price}, #{price}, #{id}, TO_DATE(#{startDay}, 'YYYY-MM-DD HH24:MI'), TO_DATE(#{endDay}, 'YYYY-MM-DD HH24:MI'), (SYSDATE + INTERVAL '9' HOUR), (SYSDATE + INTERVAL '9' HOUR), #{contents}, '', '', #{status})
+	</insert>
+	
+	<update id="updateAuction" parameterType="hashmap">
+		UPDATE TBL_AUCTION
+		SET AUCTION_TITLE = #{title},
+			AUCTION_PRICE = #{price},
+			AUCTION_CONTENTS = #{contents},
+			START_DAY = TO_DATE(#{startDay}, 'YYYY-MM-DD HH24:MI:SS'),
+			END_DAY = TO_DATE(#{endDay}, 'YYYY-MM-DD HH24:MI:SS'),
+			AUCTION_UDATETIME = (SYSDATE + INTERVAL '9' HOUR),
+			AUCTION_STATUS = #{status}
+		WHERE AUCTION_NO = #{auctionNo}
+	</update>
+	
+	<insert id="insertAuctionImg" parameterType="hashmap">
+		INSERT INTO TBL_AUCTION_IMG
+		VALUES (AUCTION_IMG_SEQ.NEXTVAL, #{auctionNo}, #{auctionImgName}, #{auctionImgOrgName}, #{auctionImgSize}, #{auctionImgPath})
+	</insert>
+	
+	<update id="updataAuctionPath" parameterType="hashmap">
+		UPDATE TBL_AUCTION
+		SET AUCTION_CONTENTS_IMG_PATH = #{auctionContentsImgPath},
+			AUCTION_CONTENTS_IMG_NAME = #{auctionContentsImgName}
+		WHERE AUCTION_NO = #{auctionNo}
+	</update>	
+	
+	<select id="selectAuctionList" parameterType="hashmap" resultType="com.example.furnature.model.Event">
+		SELECT A.*, I.AUCTION_IMG_PATH
+		FROM TBL_AUCTION A
+		INNER JOIN (
+		    SELECT AUCTION_IMG_PATH, AUCTION_NO
+		    FROM (
+		        SELECT ROW_NUMBER() OVER (PARTITION BY AUCTION_NO ORDER BY AUCTION_IMG_ORG_NAME) RN, AUCTION_IMG_PATH, AUCTION_NO
+		        FROM TBL_AUCTION_IMG
+		    ) 
+		    WHERE RN = 1
+		) I ON A.AUCTION_NO = I.AUCTION_NO
+		ORDER BY A.AUCTION_NO DESC 
+	</select>
+		<!--OFFSET 0 ROWS FETCH NEXT 4 ROWS ONLY-->
+	
+	<select id="selectDetail" parameterType="hashmap" resultType="com.example.furnature.model.Event">
+		SELECT *
+		FROM TBL_AUCTION A
+		INNER JOIN TBL_AUCTION_IMG IMG ON A.AUCTION_NO = IMG.AUCTION_NO
+		WHERE A.AUCTION_NO = #{auctionNo}
+		ORDER BY AUCTION_IMG_ORG_NAME
+	</select>
+	
+	<select id="selectEditInfo" parameterType="hashmap" resultType="com.example.furnature.model.Event">
+		SELECT *
+		FROM TBL_AUCTION 
+		WHERE AUCTION_NO = #{auctionNo}
+	</select>
+	
+	<delete id="deleteAuction" parameterType="hashmap">
+		DELETE
+		FROM TBL_AUCTION
+		WHERE AUCTION_NO = #{auctionNo}
+	</delete>
+	
+	<delete id="deleteAuctionImg" parameterType="hashmap">
+		DELETE
+		FROM TBL_AUCTION_IMG
+		WHERE AUCTION_NO = #{auctionNo}
+	</delete>	
+	
+	<insert id="insertAuctionBidding" parameterType="hashmap">
+		INSERT INTO TBL_AUCTION_BIDDING
+		VALUES(AUCTION_BIDDING_SEQ.NEXTVAL, #{auctionNo}, #{sessionId}, #{biddingPrice}, (SYSDATE + INTERVAL '9' HOUR))
+	</insert>
+	
+	<update id="updateAuctionPrice" parameterType="hashmap">
+		UPDATE TBL_AUCTION
+		SET AUCTION_PRICE_CURRENT = #{biddingPrice}
+		WHERE AUCTION_NO = #{auctionNo}
+	</update>
+	
+</mapper>

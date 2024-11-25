@@ -1,0 +1,191 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.MyPageMapper">
+	<select id="selectUser" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT U.USER_ID, U.USER_ZIP_CODE, U.USER_ADDR, U.USER_PHONE, U.USER_EMAIL, U.USER_NAME, TO_CHAR(U.USER_BIRTH, 'YYYY-MM-DD') USER_BIRTH, U.USER_AUTH, U.EVENT_ROUL, U.EVENT_CHECK<if test="sessionId != 'admin'">, NVL(M.MILEAGE_TOTAL, 0) MILEAGE_TOTAL</if>
+		FROM TBL_USER U
+		<if test="sessionId != 'admin'">
+		LEFT JOIN (
+		    SELECT USER_ID,
+			    SUM(CASE WHEN MILEAGE_STATUS = '적립' THEN MILEAGE_PRICE
+			        WHEN MILEAGE_STATUS = '사용' THEN -MILEAGE_PRICE END) MILEAGE_TOTAL
+			FROM TBL_MILEAGE
+			GROUP BY USER_ID
+		) M ON U.USER_ID = M.USER_ID
+		</if>
+		WHERE U.USER_ID = #{sessionId}
+	</select>
+	
+	<update id="updateUser" parameterType="hashmap">
+		UPDATE TBL_USER
+		<set>
+			<if test="zipCode != null and zipCode != ''">USER_ZIP_CODE = #{zipCode},</if>
+			<if test="addr != null and addr != ''">USER_ADDR = #{addr},</if>
+			<if test="phone != null and phone != ''">USER_PHONE = #{phone},</if>
+			<if test="email != null and email != ''">USER_EMAIL = #{email},</if>
+		</set>
+		WHERE USER_ID = #{sessionId}
+	</update>
+
+	<!--원데이클래스 신청내역 조회(회원)-->
+	<select id="onedayInfo" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+	   SELECT U.USER_NAME,
+       C.PRICE, 
+       P.NAME, 
+       P.PAY_ID, 
+       P.USER_ID, 
+       C.CLASS_NO, 
+       P.JOIN_DAY, 
+       P.PAY_DAY, 
+       C.CLASS_NAME, 
+       C.CLASS_DATE, 
+       O.FILE_NO, 
+       O.FILE_PATH,
+       P.COUNT,
+       CASE 
+           WHEN P.PAY_ID IS NULL OR P.PAY_ID = '' THEN 1 
+           ELSE 2 
+       END AS PAY_STATUS
+		FROM TBL_USER U
+		INNER JOIN TBL_PARTICIPANT P ON U.USER_ID = P.USER_ID
+		INNER JOIN TBL_CLASS C ON P.CLASS_NO = C.CLASS_NO
+		INNER JOIN TBL_ONEDAYFILE O ON C.CLASS_NO = O.CLASS_NO
+		WHERE P.USER_ID = #{userId}
+		AND O.FILE_NO = (
+		    SELECT MIN(FILE_NO) 
+		    FROM TBL_ONEDAYFILE 
+		    WHERE CLASS_NO = C.CLASS_NO
+		)
+
+	</select>	
+	
+	<!--원데이클래스 회원이름 조회-->
+	<select id="onedayName">
+		
+	</select>
+	
+	<!--원데이클래스 수강취소(회원)-->
+	<delete id="onedayCancel" parameterType="hashmap">
+		DELETE FROM TBL_PARTICIPANT
+		WHERE CLASS_NO = #{classNo} AND USER_ID = #{userId}
+	</delete>
+
+	<!--원데이클래스 결제정보-->
+	<update id="onedayPay" parameterType="hashmap">
+		UPDATE TBL_PARTICIPANT 
+		SET 
+		    PAY_ID = #{payId}, 
+		    PRICE = #{price}, 
+		    PAY_DAY = SYSDATE 
+		WHERE 
+		    USER_ID = #{userId} AND CLASS_NO = #{classNo};
+	</update>	
+	
+	<select id="selectBiddingList" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT MY_BIDDING, B.AUCTION_NO, B.AUCTION_BIDDING_DATE, AUCTION_TITLE, A.AUCTION_PRICE_CURRENT, A.AUCTION_STATUS, I.AUCTION_IMG_PATH, A.END_DAY, P.PAYMENT_STATUS,
+		    CASE WHEN A.AUCTION_STATUS = 'E' AND MY_BIDDING = A.AUCTION_PRICE_CURRENT THEN U.USER_NAME ||','|| U.USER_PHONE
+		    ELSE NULL
+		    END USER_INFO		    
+		FROM TBL_AUCTION_BIDDING B
+		INNER JOIN (
+		            SELECT MAX(AUCTION_BIDDING_PRICE) as MY_BIDDING, AUCTION_NO, USER_ID
+		            FROM TBL_AUCTION_BIDDING
+		            GROUP BY AUCTION_NO, USER_ID
+		) M ON B.AUCTION_BIDDING_PRICE = M.MY_BIDDING
+		INNER JOIN TBL_AUCTION A ON B.AUCTION_NO = A.AUCTION_NO
+		INNER JOIN (
+		    SELECT AUCTION_IMG_PATH, AUCTION_NO
+		    FROM (
+		        SELECT ROW_NUMBER() OVER (PARTITION BY AUCTION_NO ORDER BY AUCTION_NO) RN, AUCTION_NO, AUCTION_IMG_PATH
+		        FROM TBL_AUCTION_IMG
+		    )
+		    WHERE RN = 1
+		) I ON A.AUCTION_NO = I.AUCTION_NO
+		INNER JOIN TBL_USER U ON U.USER_ID = B.USER_ID
+		LEFT JOIN TBL_PAYMENT P ON A.AUCTION_NO = P.ORDER_NO
+		WHERE B.USER_ID = #{sessionId}
+		ORDER BY B.AUCTION_NO
+	</select>
+	
+	<delete id="deleteBidding" parameterType="hashmap">
+		DELETE FROM TBL_AUCTION_BIDDING
+		WHERE AUCTION_NO = #{auctionNo} AND USER_ID = #{sessionId}
+	</delete>
+	
+	<select id="selectMaxPrice" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT MAX(AUCTION_BIDDING_PRICE) AUCTION_BIDDING_PRICE
+		FROM TBL_AUCTION_BIDDING
+		WHERE AUCTION_NO = #{auctionNo}
+	</select>
+	
+	<update id="updateAuctionPrice" parameterType="hashmap">
+		UPDATE TBL_AUCTION
+		SET AUCTION_PRICE_CURRENT = #{biddingPrice}
+		WHERE AUCTION_NO = #{auctionNo}
+	</update>
+	
+	<select id="selectPrice" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT *
+		FROM TBL_AUCTION
+		WHERE AUCTION_NO = #{auctionNo}
+	</select>
+	
+	<select id="selectDelivery" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT ORDER_ID, USER_ID, SUM(ORDER_COUNT) AS ORDER_COUNT, ORDER_CATE, CATE_NAME, I.PRODUCT_THUMBNAIL, P2.PRODUCT_NAME, P.PRODUCT_NO, P.DELIVERY_CATE
+		FROM TBL_PRODUCT_ORDER P
+		INNER JOIN TBL_DELIVERY_CATE C ON P.DELIVERY_CATE = C.CATE_NO
+		INNER JOIN TBL_PRODUCT_IMG I ON I.PRODUCT_NO = P.PRODUCT_NO
+		INNER JOIN TBL_PRODUCT P2 ON P2.PRODUCT_NO = P.PRODUCT_NO
+		WHERE USER_ID = #{userId}
+		GROUP BY  ORDER_ID, USER_ID, ORDER_CATE, ORDER_COUNT, PRODUCT_THUMBNAIL, PRODUCT_NAME, P.PRODUCT_NO, CATE_NAME, P.DELIVERY_CATE
+		UNION ALL
+		SELECT ORDER_ID, P.USER_ID, ORDER_COUNT, ORDER_CATE, CATE_NAME, PRODUCT_THUMBNAIL, A.AUCTION_TITLE AS PRODUCT_NAME, PRODUCT_NO, DELIVERY_CATE
+		FROM TBL_PRODUCT_ORDER P
+		INNER JOIN TBL_DELIVERY_CATE C ON P.DELIVERY_CATE = C.CATE_NO
+		INNER JOIN (
+		    SELECT *
+		FROM (
+		    SELECT ROW_NUMBER() OVER(PARTITION BY AUCTION_NO ORDER BY AUCTION_IMG_NO) AS RN, AUCTION_NO, AUCTION_IMG_PATH AS PRODUCT_THUMBNAIL
+		    FROM TBL_AUCTION_IMG
+		    ) WHERE RN = 1
+		) I ON P.PRODUCT_NO = I.AUCTION_NO
+		INNER JOIN TBL_AUCTION A ON A.AUCTION_NO = P.PRODUCT_NO
+		WHERE P.USER_ID = #{userId}	    
+	</select>
+	
+	<select id="selectMileageList" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT M.MILEAGE_NAME, M.MILEAGE_PRICE, M.MILEAGE_STATUS, TO_CHAR(CDATETIME, 'YYYY-MM-DD') CDATETIME, NVL(MILEAGE_TOTAL, 0) MILEAGE_TOTAL, TO_CHAR(CDATETIME, 'HH24:MI:SS') TIME
+		FROM TBL_MILEAGE M
+		LEFT JOIN (
+		    SELECT USER_ID,
+		        SUM(CASE WHEN MILEAGE_STATUS = '적립' THEN MILEAGE_PRICE
+		            WHEN MILEAGE_STATUS = '사용' THEN -MILEAGE_PRICE END) MILEAGE_TOTAL
+		    FROM TBL_MILEAGE
+		    GROUP BY USER_ID
+		) M2 ON M.USER_ID = M2.USER_ID
+		WHERE M.USER_ID = #{sessionId}
+		ORDER BY MILEAGE_NO DESC
+	</select>
+	<select id="searchCartList" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT C.*, P.PRODUCT_NAME, P.PRODUCT_PRICE, I.PRODUCT_THUMBNAIL 
+		FROM TBL_PRODUCT_CART C
+		LEFT JOIN TBL_PRODUCT P ON C.PRODUCT_NO = P.PRODUCT_NO
+		LEFT JOIN TBL_PRODUCT_IMG I ON P.PRODUCT_NO = I.PRODUCT_NO
+		WHERE C.USER_ID = #{userId}
+	</select>	
+	<delete id="deleteCheckCart" parameterType="hashmap">
+		DELETE FROM TBL_PRODUCT_CART  
+		WHERE CART_NO IN  
+		<foreach collection="list" item="item" open="(" close=")" separator=","> #{item}</foreach>
+	</delete>
+	<select id="paymentList" parameterType="hashmap" resultType="com.example.furnature.model.MyPage">
+		SELECT *
+		FROM TBL_PAYMENT P
+		LEFT JOIN TBL_PRODUCT_ORDER O ON P.PAYMENT_MERCHANT_UID = O.ORDER_ID
+		LEFT JOIN TBL_PRODUCT PD ON O.PRODUCT_NO = PD.PRODUCT_NO
+		LEFT JOIN TBL_PRODUCT_IMG PI ON PD.PRODUCT_NO = PI.PRODUCT_NO
+		WHERE P.USER_ID = #{userId} AND O.ORDER_CATE = '상품'
+	</select>
+</mapper>

@@ -1,0 +1,104 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.OnedayMapper">
+
+	<!--원데이클래스 목록 출력-->
+	<select id="onedayList" parameterType="hashmap" resultType="com.example.furnature.model.Oneday">
+	    SELECT C.*, T.*
+	    FROM TBL_CLASS C
+	    INNER JOIN TBL_ONEDAYTHUMB T ON C.CLASS_NO = T.CLASS_NO
+	    ORDER BY C.CLASS_NO ASC 
+	    OFFSET #{startIndex} ROWS 
+	    FETCH FIRST #{outputNumber} ROWS ONLY
+	</select>
+
+	<!--원데이클래스 개시글 수 조회-->
+	<select id="totalCount" parameterType="hashmap" resultType="int"> 
+		SELECT COUNT(CLASS_NO) AS TOTAL 
+		FROM TBL_CLASS
+	</select>
+	
+	<!--원데이클래스 개별 상세정보 출력-->
+	<select id="onedayDetail" parameterType="hashmap" resultType="com.example.furnature.model.Oneday">
+	    SELECT C.*, O.*
+	    FROM TBL_CLASS C
+	    INNER JOIN TBL_ONEDAYFILE O 
+	    ON C.CLASS_NO = O.CLASS_NO
+	    WHERE C.CLASS_NO = #{classNo}
+	    ORDER BY FILE_NO ASC
+	</select>
+	
+	<!--원데이클래스 수강신청-->
+	<insert id="onedayJoin" parameterType="hashmap">
+		INSERT INTO TBL_PARTICIPANT
+		(USER_ID, COUNT, JOIN_DAY, CLASS_NO)
+		VALUES (#{userId},  #{count}, sysdate, #{classNo})
+	</insert>	
+	
+	<!--원데이클래스 등록(관리자)-->
+	<insert id="onedayReg" parameterType="hashmap" useGeneratedKeys="true" keyProperty="classNo" keyColumn="CLASS_NO">
+	 INSERT INTO TBL_CLASS 
+    (CLASS_NO, CLASS_NAME, PRICE, NUMBER_LIMIT, CLASS_DATE, START_DAY, END_DAY, DESCRIPTION)
+    VALUES (CLASS_NO_SEQ.NEXTVAL, #{className}, #{price}, #{numberLimit}, 
+            TO_DATE(#{classDate}, 'YYYY-MM-DD HH24:MI'), 
+            TO_DATE(#{startDay}, 'YYYY-MM-DD HH24:MI'), 
+            TO_DATE(#{endDay}, 'YYYY-MM-DD HH24:MI'), 
+            #{description})
+	</insert>
+	
+	<!--원데이클래스 등록시 파일업로드-->
+	<insert id="onedayFile" parameterType="hashmap">
+		INSERT INTO TBL_ONEDAYFILE 
+		(FILE_NAME, FILE_PATH, FILE_SIZE, EXT_NAME, CLASS_NO, FILE_NO)
+		VALUES (#{fileName}, #{filePath}, #{fileSize}, #{extName}, #{classNo}, FILE_NO_SEQ.NEXTVAL)
+	</insert>
+	
+	<!--원데이클래스 등록시 썸네일 업로드-->
+	<insert id="onedayThumb" parameterType="hashmap">
+		INSERT INTO TBL_ONEDAYTHUMB
+		(THUMB_NAME, THUMB_PATH, THUMB_SIZE, EXT_NAME, CLASS_NO, THUMB_NO)
+		VALUES (#{thumbName}, #{thumbPath}, #{thumbSize}, #{extName}, #{classNo}, THUMB_NO_SEQ.NEXTVAL)
+	</insert>
+	
+    <!--원데이클래스 인원초과 여부 확인-->
+	<select id="numberLimit" parameterType="hashmap" resultType="com.example.furnature.model.Oneday">
+	SELECT NUMBER_LIMIT, NVL(COUNT,0) CURRENT_NUMBER
+	FROM TBL_CLASS C
+	LEFT JOIN(
+	SELECT NVL(SUM(COUNT),0) COUNT, CLASS_NO
+	FROM TBL_PARTICIPANT
+	GROUP BY CLASS_NO) P
+	ON C.CLASS_NO = P.CLASS_NO
+	WHERE C.CLASS_NO = #{classNo}
+	</select>
+
+	<!--원데이클래스 수정(관리자)-->
+	<update id="onedayUpdate" parameterType="hashmap">
+		UPDATE TBL_CLASS 
+			SET 
+			    CLASS_NAME = #{className}, 
+			    PRICE = #{price}, 
+			    NUMBER_LIMIT = #{numberLimit}, 
+			    CLASS_DATE = TO_DATE(#{classDate}, 'YYYY-MM-DD HH24:MI:SS'),
+			    START_DAY = TO_DATE(#{startDay}, 'YYYY-MM-DD HH24:MI:SS'),
+			    END_DAY = TO_DATE(#{endDay}, 'YYYY-MM-DD HH24:MI:SS'),
+			    DESCRIPTION = #{description}
+			WHERE 
+			    CLASS_NO = #{classNo}  
+	</update>
+	
+	<!--원데이클래스 수강신청 중복여부-->
+	<select id="onedayCheck" parameterType="hashmap" resultType="int">
+	SELECT 
+    NVL(
+        MAX(CASE 
+            WHEN USER_ID IS NULL OR USER_ID = '' THEN 1 
+            ELSE 2 
+        END), 1) AS ONEDAY_CHECK 
+	FROM TBL_PARTICIPANT 
+	WHERE CLASS_NO=#{classNo} AND USER_ID=#{userId}
+	</select>
+	
+</mapper>	

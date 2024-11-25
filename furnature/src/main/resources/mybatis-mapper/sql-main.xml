@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.MainMapper">
+	<select id="selectProductList" parameterType="hashmap" resultType="com.example.furnature.model.Product">
+		SELECT P.PRODUCT_NO, P.PRODUCT_NAME, P.PRODUCT_PRICE, PRODUCT_THUMBNAIL
+		FROM TBL_PRODUCT P
+		INNER JOIN TBL_PRODUCT_IMG I ON P.PRODUCT_NO = I.PRODUCT_NO
+		WHERE PRODUCT_CUSTOM = 'Y'
+		ORDER BY PRODUCT_NO DESC
+		OFFSET 0 ROWS FETCH FIRST 8 ROWS ONLY
+	</select>
+	
+	<select id="selectOnedayList" parameterType="hashmap" resultType="com.example.furnature.model.Oneday">
+		SELECT C.CLASS_NO, C.CLASS_NAME, C.CLASS_DATE, C.PRICE, THUMB_PATH
+		FROM TBL_CLASS C
+		INNER JOIN TBL_ONEDAYTHUMB T ON C.CLASS_NO = T.CLASS_NO
+		ORDER BY C.CLASS_NO 
+		OFFSET 0 ROWS FETCH FIRST 4 ROWS ONLY
+	</select>
+	
+	<select id="selectAuctionList" parameterType="hashmap" resultType="com.example.furnature.model.Event">
+		SELECT A.AUCTION_NO, A.AUCTION_TITLE, A.AUCTION_PRICE_CURRENT, A.END_DAY, I.AUCTION_IMG_PATH 
+		FROM TBL_AUCTION A
+		INNER JOIN (
+		    SELECT ROW_NUMBER() OVER(PARTITION BY AUCTION_NO ORDER BY AUCTION_IMG_ORG_NAME) RN, AUCTION_NO, AUCTION_IMG_PATH 
+		    FROM TBL_AUCTION_IMG
+		) I ON A.AUCTION_NO = I.AUCTION_NO
+		WHERE I.RN = 1 AND A.AUCTION_STATUS = 'I'
+		ORDER BY A.END_DAY
+		OFFSET 0 ROWS FETCH FIRST 4 ROWS ONLY
+	</select>
+</mapper>

@@ -1,0 +1,369 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+	"http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.example.furnature.mapper.AdminMapper">
+	<select id="selectUserList" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+		SELECT 
+		    USER_ID, USER_NAME, USER_ADDR, USER_PHONE, USER_EMAIL,
+		    TO_CHAR(USER_BIRTH, 'YYYY-MM-DD') USER_BIRTH,
+		    CASE WHEN USER_AUTH = '2' THEN '관리자'
+		         ELSE '일반회원'
+		    END USER_AUTH,
+		    CASE WHEN EVENT_ROUL = 'Y' THEN '참여가능'
+		         ELSE '참여완료'
+		    END EVENT_ROUL            
+		FROM TBL_USER
+		WHERE 1=1 
+		<if test="keyword != null and keyword != ''">
+			AND USER_NAME LIKE '%' || #{keyword} || '%'
+		</if>
+		ORDER BY USER_AUTH ASC, USER_NAME
+		OFFSET #{currentPage} ROWS FETCH FIRST #{pageSize} ROWS ONLY
+	</select>
+	
+	<select id="selectAllUser" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+		SELECT COUNT(*) ALL_USER
+		FROM TBL_USER
+		WHERE 1=1 
+		<if test="keyword != null and keyword != ''">
+			AND USER_NAME LIKE '%' || #{keyword} || '%'
+		</if>
+	</select>
+	
+	<select id="selectUser" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+		SELECT *
+		FROM TBL_USER
+		WHERE USER_ID = #{id}
+	</select>
+	
+	<delete id="deleteUser" parameterType="hashmap">
+		DELETE FROM TBL_USER
+		WHERE USER_ID = #{id}
+	</delete>
+	
+	<update id="updateUser" parameterType="hashmap">
+		UPDATE TBL_USER
+		<set>
+			<if test="phone != null and phone != ''">USER_PHONE = #{phone},</if>
+			<if test="email != null and email != ''">USER_EMAIL = #{email},</if>
+			<if test="email != null and email != ''">EVENT_ROUL = #{roul},</if>
+		</set>
+		WHERE USER_ID = #{id}
+	</update>
+  
+  <update id="resetPwd" parameterType="hashmap">
+		UPDATE TBL_USER
+		SET USER_PWD = '1234'
+		WHERE USER_ID = #{id}
+	</update>	
+
+	<!--원데이클래스 신청인수 등 현황-->
+	<select id="currentNumber" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+	    SELECT C.CLASS_NO, CLASS_NAME, CLASS_DATE, END_DAY, NUMBER_LIMIT, NVL(COUNT, 0) AS CURRENT_NUMBER, DESCRIPTION
+	    FROM TBL_CLASS C
+	    LEFT JOIN (
+	        SELECT NVL(SUM(COUNT),0) COUNT, CLASS_NO
+	        FROM TBL_PARTICIPANT
+	        GROUP BY CLASS_NO
+	    ) P ON C.CLASS_NO = P.CLASS_NO
+	    WHERE 1 = 1
+	    <if test="searchOption == 'all' and (keyword != null and keyword != '')">
+	        AND (CLASS_NAME LIKE '%' || #{keyword} || '%' 
+            OR TO_CHAR(END_DAY, 'YYYY-MM-DD HH24:MI:SS') LIKE '%' || #{keyword} || '%')
+	    </if>
+	    <if test="searchOption == 'className' and (keyword != null and keyword != '')">
+	        AND CLASS_NAME LIKE '%' || #{keyword} || '%'
+	    </if>
+	    <if test="searchOption == 'endDay' and (keyword != null and keyword != '')">
+	        AND TO_CHAR(END_DAY, 'YYYY-MM-DD HH24:MI:SS') LIKE '%' || #{keyword} || '%'
+	    </if>
+	    ORDER BY C.CLASS_NO ASC
+	    OFFSET #{startIndex} ROWS FETCH FIRST #{outputNumber} ROWS ONLY
+	</select>
+	
+	<!--원데이클래스 클래스 수 조회-->
+	<select id="totalCount" parameterType="hashmap" resultType="int"> 
+		SELECT COUNT(CLASS_NO) AS TOTAL 
+		FROM TBL_CLASS
+	</select>
+
+
+	<!--원데이클래스 삭제-->
+	<delete id="onedayDelete" parameterType="hashmap">
+		DELETE FROM TBL_CLASS
+		WHERE CLASS_NO = #{classNo}
+	</delete>
+	
+	<!--원데이클래스 썸네일삭제-->
+	<delete id="onedayThumbDelete" parameterType="hashmap">
+		DELETE FROM TBL_ONEDAYTHUMB
+		WHERE CLASS_NO = #{classNo}
+	</delete>
+	
+	<!--원데이클래스 파일삭제-->
+	<delete id="onedayFileDelete" parameterType="hashmap">
+		DELETE FROM TBL_ONEDAYFILE
+		WHERE CLASS_NO = #{classNo}
+	</delete>
+	
+	<!--원데이클래스 개별정보 출력-->
+	<select id="onedayInfo" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+	    SELECT * 
+	    FROM TBL_CLASS
+	    WHERE CLASS_NO = #{classNo}
+	</select>
+	
+	<select id="selectDelivery" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+		SELECT 
+			ORDER_ID,
+			USER_ID,
+		    SUM(ORDER_COUNT) AS ORDER_COUNT,
+		    ORDER_CATE,
+		    CATE_NAME,
+		    I.PRODUCT_THUMBNAIL,
+		    P2.PRODUCT_NAME,
+		    P.PRODUCT_NO
+		FROM 
+		    TBL_PRODUCT_ORDER P
+		    INNER JOIN TBL_DELIVERY_CATE C ON P.DELIVERY_CATE = C.CATE_NO
+	        INNER JOIN TBL_PRODUCT_IMG I ON I.PRODUCT_NO = P.PRODUCT_NO
+	        INNER JOIN TBL_PRODUCT P2 ON P2.PRODUCT_NO = P.PRODUCT_NO
+	        WHERE USER_ID = #{userId}
+		GROUP BY 
+		    ORDER_ID, 
+		    USER_ID,
+		    ORDER_CATE,
+	        ORDER_COUNT,
+	        PRODUCT_THUMBNAIL,
+	        PRODUCT_NAME,
+	        P.PRODUCT_NO,
+		    CATE_NAME
+		    
+	</select>
+	
+	<!-- 관리자 배달목록 -->
+	<select id="adminDelivery" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+	SELECT *
+	FROM(
+	    SELECT 
+		    ORDER_ID,
+		    USER_ID,
+		    SUM(ORDER_COUNT) AS ORDER_COUNT,
+		    ORDER_CATE,
+		    CATE_NAME,
+		    P2.PRODUCT_NAME,
+		    CAST(P.PRODUCT_NO AS NUMBER) AS PRODUCT_NO,
+		    DELIVERY_CATE
+		FROM 
+		    TBL_PRODUCT_ORDER P
+		    INNER JOIN TBL_DELIVERY_CATE C ON P.DELIVERY_CATE = C.CATE_NO
+		    INNER JOIN TBL_PRODUCT_IMG I ON I.PRODUCT_NO = P.PRODUCT_NO
+		    INNER JOIN TBL_PRODUCT P2 ON P2.PRODUCT_NO = P.PRODUCT_NO
+		WHERE 1=1
+			    <if test="keyword != null and keyword !=''">
+			        AND ORDER_ID LIKE '%' ||  #{keyword} || '%'
+			    </if>
+		GROUP BY 
+		    ORDER_ID, 
+		    USER_ID,
+		    ORDER_CATE,
+		    CATE_NAME,
+		    P2.PRODUCT_NAME,
+		    P.PRODUCT_NO,
+		    DELIVERY_CATE
+		
+		UNION ALL
+		
+		SELECT 
+		    o.ORDER_ID,
+		    o.USER_ID,
+		    o.ORDER_COUNT,
+		    o.ORDER_CATE,
+		    c.CATE_NAME,
+		    a.AUCTION_TITLE AS PRODUCT_NAME,
+		    a.AUCTION_NO AS PRODUCT_NO,
+		    o.DELIVERY_CATE
+		FROM 
+		    TBL_PRODUCT_ORDER o
+		    INNER JOIN TBL_AUCTION a ON CAST(o.PRODUCT_NO AS NUMBER) = a.AUCTION_NO
+		    INNER JOIN TBL_DELIVERY_CATE c ON c.CATE_NO = o.DELIVERY_CATE
+		    WHERE 1=1
+	    <if test="keyword != null and keyword !=''">
+	        AND ORDER_ID LIKE '%' ||  #{keyword} || '%'
+	    </if>
+	    ) COMBINE_RESULT
+	    ORDER BY ORDER_ID
+        OFFSET #{startIndex} ROWS FETCH FIRST #{outputNumber} ROWS ONLY   
+	</select>
+	
+	<!--관리자 배송목록 페이징 카운트-->
+	<select id="adminDeliveryCount" parameterType="hashmap" resultType="int">
+	SELECT COUNT(*) AS COUNT
+	FROM
+	(
+	SELECT 
+		    ORDER_ID,
+		    USER_ID,
+		    SUM(ORDER_COUNT) AS ORDER_COUNT,
+		    ORDER_CATE,
+		    CATE_NAME,
+		    P2.PRODUCT_NAME,
+		    CAST(P.PRODUCT_NO AS NUMBER) AS PRODUCT_NO,
+		    DELIVERY_CATE
+		FROM 
+		    TBL_PRODUCT_ORDER P
+		    INNER JOIN TBL_DELIVERY_CATE C ON P.DELIVERY_CATE = C.CATE_NO
+		    INNER JOIN TBL_PRODUCT_IMG I ON I.PRODUCT_NO = P.PRODUCT_NO
+		    INNER JOIN TBL_PRODUCT P2 ON P2.PRODUCT_NO = P.PRODUCT_NO
+		WHERE 1=1
+			    <if test="keyword != null and keyword !=''">
+			        AND ORDER_ID LIKE '%' ||  #{keyword} || '%'
+			    </if>
+		GROUP BY 
+		    ORDER_ID, 
+		    USER_ID,
+		    ORDER_CATE,
+		    CATE_NAME,
+		    P2.PRODUCT_NAME,
+		    P.PRODUCT_NO,
+		    DELIVERY_CATE
+		
+		UNION ALL
+		
+		SELECT 
+		    o.ORDER_ID,
+		    o.USER_ID,
+		    o.ORDER_COUNT,
+		    o.ORDER_CATE,
+		    c.CATE_NAME,
+		    a.AUCTION_TITLE AS PRODUCT_NAME,
+		    a.AUCTION_NO AS PRODUCT_NO,
+		    o.DELIVERY_CATE
+		FROM 
+		    TBL_PRODUCT_ORDER o
+		    INNER JOIN TBL_AUCTION a ON CAST(o.PRODUCT_NO AS NUMBER) = a.AUCTION_NO
+		    INNER JOIN TBL_DELIVERY_CATE c ON c.CATE_NO = o.DELIVERY_CATE
+		    WHERE 1=1
+	    <if test="keyword != null and keyword !=''">
+	        AND ORDER_ID LIKE '%' ||  #{keyword} || '%'
+	    </if>
+		)
+	</select>
+	<!--관리자 배달현황 업데이트-->
+	<update id="adminDeliveryUpdate" parameterType="hashmap">
+		UPDATE 
+		TBL_PRODUCT_ORDER
+		SET 
+			DELIVERY_CATE = #{deliveryCate}
+		WHERE ORDER_ID = #{orderId}
+	</update>
+	
+	<!--상품등록-->
+	<insert id="enrollProduct" parameterType="hashmap" useGeneratedKeys="true" keyProperty="productNo" keyColumn="PRODUCT_NO">
+		INSERT INTO TBL_PRODUCT(
+			PRODUCT_NO,
+			PRODUCT_NAME,
+			PRODUCT_WIDTH,
+			PRODUCT_LENGTH,
+			PRODUCT_HEIGHT,
+			PRODUCT_PRICE,
+			PRODUCT_COLOR,
+			PRODUCT_SIZE1,
+			PRODUCT_SIZE2,
+			PRODUCT_SIZE3,
+			PRODUCT_CUSTOM,
+			PRODUCT_CATE1,
+			PRODUCT_CATE2,
+			PRODUCT_CDATETIME,
+			PRODUCT_UDATETIME)
+			VALUES(PRODUCT_NO_SEQ.NEXTVAL,#{productName},#{productWidth},#{productLength},#{productHeight},#{productPrice},
+			#{productColor},#{productSize1},#{productSize2},#{productSize3},#{productCustom},#{productCate1},#{productCate2},
+			SYSDATE,SYSDATE)
+	</insert>
+	
+	<!--상품 썸네일,상품설명 첨부파일 등록-->
+	<insert id="attachProduct" parameterType="hashmap">
+		INSERT INTO
+		TBL_PRODUCT_IMG
+		VALUES(#{productNo},#{productThumbnail},#{productDetail1})
+	</insert>
+	<!--상품삭제-->
+	<delete id="productDelete" parameterType="hashmap">
+		DELETE
+		FROM TBL_PRODUCT
+		WHERE PRODUCT_NO = #{productNo}
+	</delete>
+	<!--첨부파일삭제-->
+	<delete id="productAttachDelete" parameterType="hashmap">
+		DELETE
+		FROM TBL_PRODUCT_IMG
+		WHERE PRODUCT_NO = #{productNo}
+	</delete>
+	
+	<select id="productUpdateList" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+		SELECT *
+		FROM TBL_PRODUCT P
+		WHERE PRODUCT_NO = #{productNo}
+	</select>
+	<update id="productUpdate" parameterType="hashmap">
+		UPDATE TBL_PRODUCT
+		SET
+		PRODUCT_NAME = #{productName},
+		PRODUCT_WIDTH = #{productWidth},
+		PRODUCT_LENGTH = #{productLength},
+		PRODUCT_HEIGHT = #{productHeight},
+		PRODUCT_PRICE = #{productPrice},
+		PRODUCT_COLOR = #{productColor},
+		PRODUCT_SIZE1 = #{productSize1},
+		PRODUCT_SIZE2 = #{productSize2},
+		PRODUCT_SIZE3 = #{productSize3},
+		PRODUCT_CUSTOM = #{productCustom},
+		PRODUCT_CATE1 = #{productCate1},
+		PRODUCT_CATE2 = #{productCate2},
+		PRODUCT_UDATETIME = SYSDATE
+		WHERE PRODUCT_NO = #{productNo}
+	</update>
+	
+	<!--디자인 관리자 리스트-->
+	<select id="adminDesignList" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+		SELECT 
+		    *
+		FROM
+			TBL_DESIGN
+		WHERE
+		1=1
+		 <if test="keyword != null and keyword !=''">
+	        AND P.PRODUCT_NAME LIKE '%' ||  #{keyword} || '%'
+	    </if>
+	    OFFSET #{startIndex} ROWS FETCH FIRST #{outputNumber} ROWS ONLY
+	</select>
+	<!--게시판 삭제-->
+	<delete id="qnaDelete" parameterType="hashmap">
+		DELETE 
+		FROM TBL_QNA
+		WHERE QNA_NO = #{qnaNo}
+	</delete>
+	<delete id="commentAllDelete" parameterType="hashmap">
+		DELETE 
+		FROM TBL_QNA_COMMENT
+		WHERE QNA_NO = #{qnaNo}
+	</delete>
+	
+	<!--관리자 커스텀 리스트-->
+	<select id="adminCustomList" parameterType="hashmap" resultType="com.example.furnature.model.Admin">
+		SELECT 
+		    *
+		FROM
+			TBL_CUSTOM C
+		INNER JOIN TBL_USER U ON C.USER_ID = U.USER_ID
+	</select>
+	
+	<!--관리자 커스텀 확정-->
+	<update id="customConfirm" parameterType="hashmap">
+		UPDATE TBL_CUSTOM
+		SET
+		CUSTOM_CON = 'Y'
+		WHERE PRODUCT_NO = #{productNo} AND USER_ID = #{userId}
+	</update>
+</mapper>
