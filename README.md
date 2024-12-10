@@ -121,14 +121,6 @@
             <li>
                 <h4>구현 기능</h4>
                 <div style= "text-align:left;">
-                    <h3>메인 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="메인" src="https://github.com/user-attachments/assets/00a7fd1c-9034-444b-964c-ef4061a7d4eb">
-                </div>
-                <div style= "text-align:left;">
                     <h3>장바구니 페이지</h3>
                     <ul dir="auto">
                         <li></li>
@@ -151,38 +143,6 @@
                         <li></li>
                     </ul>
                     <img width="50%" alt="구매내역" src="https://github.com/user-attachments/assets/fc34c059-6bb5-42c8-83d5-442a79900a39">
-                </div>
-                <div style= "text-align:left;">
-                    <h3>관련추천상품 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="관련추천상품" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
-                </div>
-                <div style= "text-align:left;">
-                    <h3>관리자 페이지(배송정보)</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="배송" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
-                </div>
-                <div style= "text-align:left;">
-                    <h3>구매 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="구매" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
-                </div>
-                <div style= "text-align:left;">
-                    <h3>리뷰 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="리뷰" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
                 </div>
                 <div style= "text-align:left;">
                     <h3>상품상세 페이지</h3>
