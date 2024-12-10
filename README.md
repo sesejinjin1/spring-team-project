@@ -123,8 +123,11 @@
                 <div style= "text-align:left;">
                     <h3>상품상세 페이지</h3>
                     <ul dir="auto">
-                        <li></li>
-                        <li></li>
+                        <li>상품 페이지에서 선택한 상품의 가격, 사이즈,규격 등 상세내용을 보여줍니다.</li>
+                        <li>상품의 사이즈 선택과 수량 변경 후 구매하거나, 장바구니 버튼을 이용해 장바구니에 담을 수 있습니다.</li>
+                        <li>탭바 메뉴를 통해 상품에 대한 상세 정보와 배송정보, 관련추천상품, 리뷰 등을 보여줍니다.</li>
+                        <li>관련추천상품은 현재 보고있는 상품과 비슷한 카테고리의 상품을 랜덤하게 4개 출력해 보여줍니다.</li>
+                        <li>리뷰는 상품을 구매한 회원에게만 작성버튼이 나타나며, 버튼을 누를 시 사진 첨부와 별점기능을 통해 리뷰 등록, 수정, 삭제가 가능합니다.</li>
                     </ul>
                     <img width="50%" alt="상품상세" src="https://github.com/user-attachments/assets/0042a7bf-1bed-4740-9f7e-de6950bda258">
                     <img width="50%" alt="사이즈선택" src="https://github.com/user-attachments/assets/ef110114-9500-4d3e-a3f7-688974f211eb">
