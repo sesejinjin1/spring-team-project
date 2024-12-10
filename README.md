@@ -141,28 +141,21 @@
                     <img width="50%" alt="결제" src="https://github.com/user-attachments/assets/cf16c853-b4d9-48b2-9ac3-5450339e4f7f">
                 </div>
                 <div style= "text-align:left;">
-                    <h3>장바구니 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="장바구니" src="https://github.com/user-attachments/assets/b869c039-df61-4082-a222-dad1af09282f">
-                </div>
-                <div style= "text-align:left;">
                     <h3>구매내역 페이지</h3>
                     <ul dir="auto">
-                        <li></li>
-                        <li></li>
+                        <li>결제 성공 시 주문 상품(상품명 , 선택한 옵션, 가격 등) 목록들을 보여줍니다. </li>
+                        <li>결제 취소를 버튼을 누르게 되면 DB내에 주문번호를 조회 후 결제를 취소해줍니다.</li>
                     </ul>
                     <img width="50%" alt="구매내역" src="https://github.com/user-attachments/assets/fc34c059-6bb5-42c8-83d5-442a79900a39">
                 </div>
                 <div style= "text-align:left;">
                     <h3>장바구니 페이지</h3>
                     <ul dir="auto">
-                        <li>상품 상세 페이제에서 장바구니에 담은 상품 목록들을 출력해줍니다.</li>
+                        <li>상품 상세 페이제에서 장바구니에 담은 상품 목록들을 보여줍니다.</li>
                         <li>선택한 수량 변경이 가능하고, 체크박스를 통해 선택 후 장바구니에서 삭제가 가능합니다.</li>
                     </ul>
-                    <img width="50%" alt="" src="https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c">
+                    <img width="50%" alt="장바구니1" src="https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c">
+                    <img width="50%" alt="장바구니2" src="https://github.com/user-attachments/assets/b869c039-df61-4082-a222-dad1af09282f">
                 </div>
                  <div style= "text-align:left;">
                     <h3>관리자 페이지 배송조회</h3>
