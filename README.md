@@ -164,8 +164,14 @@
                     </ul>
                     <img width="50%" alt="" src="https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c">
                 </div>
-
-                
+                 <div style= "text-align:left;">
+                    <h3>관리자 페이지 배송조회</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="" src="https://github.com/user-attachments/assets/114ffa29-12b7-46e2-b120-146a02996f13">
+                </div>                
             </li>
         </ul>
 <!--     <div style= "text-align:left;">
