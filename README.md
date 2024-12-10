@@ -190,23 +190,27 @@
                         <li></li>
                         <li></li>
                     </ul>
-                    <img width="50%" alt="상품상세" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                    <img width="50%" alt="상품상세" src="https://github.com/user-attachments/assets/0042a7bf-1bed-4740-9f7e-de6950bda258">
+                    <img width="50%" alt="사이즈선택" src="https://github.com/user-attachments/assets/ef110114-9500-4d3e-a3f7-688974f211eb">
+                    <img width="50%" alt="관련추천상품" src="https://github.com/user-attachments/assets/98f690cd-7e45-492e-aa7c-08873c4535d2">
+                    <img width="50%" alt="리뷰" src="https://github.com/user-attachments/assets/da116c60-a76f-4dd0-bc95-5dcd763620fb">
+                    <img width="50%" alt="리뷰작성" src="https://github.com/user-attachments/assets/b7cfe1ab-885c-412f-bee6-a19ff38e029e">
                 </div>
                 <div style= "text-align:left;">
-                    <h3> 페이지</h3>
+                    <h3>결제 페이지</h3>
                     <ul dir="auto">
                         <li></li>
                         <li></li>
                     </ul>
-                    <img width="50%" alt="" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                    <img width="50%" alt="결제" src="https://github.com/user-attachments/assets/33cfa583-e58d-4534-b6aa-c7e2460d0edf">
                 </div>
                 <div style= "text-align:left;">
-                    <h3> 페이지</h3>
+                    <h3>장바구니 페이지</h3>
                     <ul dir="auto">
                         <li></li>
                         <li></li>
                     </ul>
-                    <img width="50%" alt="" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                    <img width="50%" alt="" src="https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c">
                 </div>
 
                 
@@ -219,22 +223,5 @@
     <div style= "text-align:left;">
     <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🎇 프로젝트 후기 </h2>       
     </div> -->
-    ![카트2]()
 
-
-
-![관리자페이지 배송](https://github.com/user-attachments/assets/114ffa29-12b7-46e2-b120-146a02996f13)
-
-![상품상세](https://github.com/user-attachments/assets/0042a7bf-1bed-4740-9f7e-de6950bda258)
-![관련추천상품](https://github.com/user-attachments/assets/98f690cd-7e45-492e-aa7c-08873c4535d2)
-![리뷰](https://github.com/user-attachments/assets/da116c60-a76f-4dd0-bc95-5dcd763620fb)
-![리뷰작성](https://github.com/user-attachments/assets/b7cfe1ab-885c-412f-bee6-a19ff38e029e)
-
-![사이즈선택](https://github.com/user-attachments/assets/ef110114-9500-4d3e-a3f7-688974f211eb)
-![구매](https://github.com/user-attachments/assets/33cfa583-e58d-4534-b6aa-c7e2460d0edf)
-
-
-![카트1](https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c)
-   
- 
     
