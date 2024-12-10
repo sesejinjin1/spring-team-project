@@ -121,14 +121,95 @@
             <li>
                 <h4>구현 기능</h4>
                 <div style= "text-align:left;">
+                    <h3>메인 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="메인" src="https://github.com/user-attachments/assets/00a7fd1c-9034-444b-964c-ef4061a7d4eb">
+                </div>
                 <div style= "text-align:left;">
-                <h3>관리자 페이지</h3>
-                <ul dir="auto">
-                    <li>가입한 회원목록을 모두 보여주고 회원정보를 수정,삭제 합니다</li>
-                    <li>로그인에 실패해 잠겨있는 계정을 풀어줍니다.</li>
-                </ul>
-                <img width="50%" alt="관리자" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
-            </div>
+                    <h3>장바구니 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="장바구니" src="https://github.com/user-attachments/assets/b869c039-df61-4082-a222-dad1af09282f">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>결제 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="결제" src="https://github.com/user-attachments/assets/cf16c853-b4d9-48b2-9ac3-5450339e4f7f">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>구매내역 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="구매내역" src="https://github.com/user-attachments/assets/fc34c059-6bb5-42c8-83d5-442a79900a39">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>관련추천상품 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="관련추천상품" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>관리자 페이지(배송정보)</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="배송" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>구매 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="구매" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>리뷰 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="리뷰" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>상품상세 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="상품상세" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                </div>
+                <div style= "text-align:left;">
+                    <h3> 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                </div>
+                <div style= "text-align:left;">
+                    <h3> 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+                </div>
+
+                
             </li>
         </ul>
 <!--     <div style= "text-align:left;">
@@ -138,6 +219,22 @@
     <div style= "text-align:left;">
     <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🎇 프로젝트 후기 </h2>       
     </div> -->
+    ![카트2]()
 
+
+
+![관리자페이지 배송](https://github.com/user-attachments/assets/114ffa29-12b7-46e2-b120-146a02996f13)
+
+![상품상세](https://github.com/user-attachments/assets/0042a7bf-1bed-4740-9f7e-de6950bda258)
+![관련추천상품](https://github.com/user-attachments/assets/98f690cd-7e45-492e-aa7c-08873c4535d2)
+![리뷰](https://github.com/user-attachments/assets/da116c60-a76f-4dd0-bc95-5dcd763620fb)
+![리뷰작성](https://github.com/user-attachments/assets/b7cfe1ab-885c-412f-bee6-a19ff38e029e)
+
+![사이즈선택](https://github.com/user-attachments/assets/ef110114-9500-4d3e-a3f7-688974f211eb)
+![구매](https://github.com/user-attachments/assets/33cfa583-e58d-4534-b6aa-c7e2460d0edf)
+
+
+![카트1](https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c)
+   
  
     
