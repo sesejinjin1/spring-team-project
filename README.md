@@ -129,11 +129,15 @@
                         <li>관련추천상품은 현재 보고있는 상품과 비슷한 카테고리의 상품을 랜덤하게 4개 출력해 보여줍니다.</li>
                         <li>리뷰는 상품을 구매한 회원에게만 작성버튼이 나타나며, 버튼을 누를 시 사진 첨부와 별점기능을 통해 리뷰 등록, 수정, 삭제가 가능합니다.</li>
                     </ul>
-                    <img width="50%" alt="상품상세" src="https://github.com/user-attachments/assets/0042a7bf-1bed-4740-9f7e-de6950bda258">
-                    <img width="50%" alt="사이즈선택" src="https://github.com/user-attachments/assets/ef110114-9500-4d3e-a3f7-688974f211eb">
+                    <p style="display: flex; justify-content: space-between;">
+                    <img style="width: 48%; margin-right: 10px;" alt="상품상세" src="https://github.com/user-attachments/assets/0042a7bf-1bed-4740-9f7e-de6950bda258">
+                    <img width="48%" alt="사이즈선택" src="https://github.com/user-attachments/assets/ef110114-9500-4d3e-a3f7-688974f211eb">
+                    </p>
+                    <p style="display: flex; justify-content: space-between;">
                     <img width="50%" alt="관련추천상품" src="https://github.com/user-attachments/assets/98f690cd-7e45-492e-aa7c-08873c4535d2">
-                    <img width="50%" alt="리뷰" src="https://github.com/user-attachments/assets/da116c60-a76f-4dd0-bc95-5dcd763620fb">
-                    <img width="50%" alt="리뷰작성" src="https://github.com/user-attachments/assets/b7cfe1ab-885c-412f-bee6-a19ff38e029e">
+                    <img  style="width: 48%; margin-right: 10px;" alt="리뷰" src="https://github.com/user-attachments/assets/da116c60-a76f-4dd0-bc95-5dcd763620fb">
+                    </p>
+                    <img width="48%" alt="리뷰작성" src="https://github.com/user-attachments/assets/b7cfe1ab-885c-412f-bee6-a19ff38e029e">
                 </div>
                 <div style= "text-align:left;">
                     <h3>결제 페이지</h3>
