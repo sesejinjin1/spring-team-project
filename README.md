@@ -138,7 +138,8 @@
                 <div style= "text-align:left;">
                     <h3>결제 페이지</h3>
                     <ul dir="auto">
-                        <li></li>
+                        <li>결제 상세페이지에서 선택한 사이즈, 수량, 가격, 최종결제금액 등을 보여줍니다 </li>
+                        <li>배송지정보는 회원가입 시 입력한 주소가 기본배송지가 되며, 직접입력 선택 시 모두 비워지며 새로운 배송지로 배송이 가능합니다.</li>
                         <li></li>
                     </ul>
                     <img width="50%" alt="결제" src="https://github.com/user-attachments/assets/cf16c853-b4d9-48b2-9ac3-5450339e4f7f">
