@@ -115,35 +115,11 @@
         <ul>
             <li><h4>작업 페이지</h4>
                 <ul>                    
-                    <li>상품 상세페이지(구매 , 후기 , 관련추천상품 ) , 상품 결제 페이지, 마이페이지(결제내역, 장바구니)</li>
+                    <li>상품 상세페이지(구매 , 후기 , 관련추천상품 ) , 상품 결제 페이지, 마이페이지(결제내역, 장바구니), 관리자페이지 (배송조회)</li>
                 </ul>
             </li>            
             <li>
                 <h4>구현 기능</h4>
-                <div style= "text-align:left;">
-                    <h3>장바구니 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="장바구니" src="https://github.com/user-attachments/assets/b869c039-df61-4082-a222-dad1af09282f">
-                </div>
-                <div style= "text-align:left;">
-                    <h3>결제 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="결제" src="https://github.com/user-attachments/assets/cf16c853-b4d9-48b2-9ac3-5450339e4f7f">
-                </div>
-                <div style= "text-align:left;">
-                    <h3>구매내역 페이지</h3>
-                    <ul dir="auto">
-                        <li></li>
-                        <li></li>
-                    </ul>
-                    <img width="50%" alt="구매내역" src="https://github.com/user-attachments/assets/fc34c059-6bb5-42c8-83d5-442a79900a39">
-                </div>
                 <div style= "text-align:left;">
                     <h3>상품상세 페이지</h3>
                     <ul dir="auto">
@@ -162,7 +138,23 @@
                         <li></li>
                         <li></li>
                     </ul>
-                    <img width="50%" alt="결제" src="https://github.com/user-attachments/assets/33cfa583-e58d-4534-b6aa-c7e2460d0edf">
+                    <img width="50%" alt="결제" src="https://github.com/user-attachments/assets/cf16c853-b4d9-48b2-9ac3-5450339e4f7f">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>장바구니 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="장바구니" src="https://github.com/user-attachments/assets/b869c039-df61-4082-a222-dad1af09282f">
+                </div>
+                <div style= "text-align:left;">
+                    <h3>구매내역 페이지</h3>
+                    <ul dir="auto">
+                        <li></li>
+                        <li></li>
+                    </ul>
+                    <img width="50%" alt="구매내역" src="https://github.com/user-attachments/assets/fc34c059-6bb5-42c8-83d5-442a79900a39">
                 </div>
                 <div style= "text-align:left;">
                     <h3>장바구니 페이지</h3>
