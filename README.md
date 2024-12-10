@@ -115,7 +115,7 @@
       <a href="https://www.youtube.com/watch?">▶FURNATURE 시연영상</a>
     </div> -->
     <div style= "text-align:left;">
-    <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33; ">  👨‍👩‍👦‍👦 내 역할 </h2>
+    <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33; ">  👨‍👩‍👦‍👦 내가 작업한 페이지 및 기능 </h2>
         <ul>
             <li><h4>작업 페이지</h4>
                 <ul>                    
@@ -123,9 +123,21 @@
                 </ul>
             </li>            
             <li><h4>구현 기능</h4>
-                <ul>                    
-                    <li>구매 상품 결제 및 장바구니 기능, 후기 작성 및 수정, 삭제 , 관련 추천상품 목록 , 결제 기능, 결제내역 취소</li>
-                </ul>
+                <div style= "text-align:left;">
+                     <div style= "text-align:left;">
+        <h3>관리자 페이지</h3>
+        <ul dir="auto">
+            <li>가입한 회원목록을 모두 보여주고 회원정보를 수정,삭제 합니다</li>
+            <li>로그인에 실패해 잠겨있는 계정을 풀어줍니다.</li>
+        </ul>
+        <img width="50%" alt="관리자" src="https://github.com/user-attachments/assets/8e08d324-e748-4466-bdc9-d9ccf14701b4">
+    </div>
+    <h2 style="border-bottom: 1px solid #d8dee4; color: #282d33;"> 🎇 프로젝트 후기 </h2>
+    <div style="margin: 0 auto; text-align: left;" align= "left">
+    프로젝트 시작에 앞서 초기 설정을 진행하며 체계적인 설계의 중요성을 느꼈습니다. 앞으로는 더 체계적이고 효율적으로 프로젝트를 진행할 수 있도록 발전하고 싶습니다. 수업 직후에 프로젝트를 진행하면서 배운 내용을 직접 구현하는 과정이 어색했지만 어떤 부분이 부족한지 알 수 있는 기회였습니다. 프로
+    젝트 진행중 부족거나 모르는 것들이 생겼을때 구글링을 통해 하나씩 해결해 나가면서 스스로 더 성장하게 되었습니다. 아쉬웠던 부분은 프로젝트 기간이 너무 짧았기에 생각했던 기능들을 다 구현하지 못한것이 너무 아쉬웠습니다. 이후에 구현하지 못했던 부분들인 수강신청, 대관, 지도API를 활용한 길찾기
+    등을 추가 하도록 하겠습니다.
+    </div>
             </li>
         </ul>
 <!--     <div style= "text-align:left;">
