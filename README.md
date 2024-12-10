@@ -159,16 +159,16 @@
                 <div style= "text-align:left;">
                     <h3>장바구니 페이지</h3>
                     <ul dir="auto">
-                        <li></li>
-                        <li></li>
+                        <li>상품 상세 페이제에서 장바구니에 담은 상품 목록들을 출력해줍니다.</li>
+                        <li>선택한 수량 변경이 가능하고, 체크박스를 통해 선택 후 장바구니에서 삭제가 가능합니다.</li>
                     </ul>
                     <img width="50%" alt="" src="https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c">
                 </div>
                  <div style= "text-align:left;">
                     <h3>관리자 페이지 배송조회</h3>
                     <ul dir="auto">
-                        <li></li>
-                        <li></li>
+                        <li>결제한 상품들의 배송현황을 관리합니다.</li>
+                        <li>구매자가 결제 에서 배송시에 배송중, 완료시에는 배송완료로 변경이 가능하고 변경된 배송현황은 사용자의 마이페이지 내에서도 확인이 가능합니다.</li>
                     </ul>
                     <img width="50%" alt="" src="https://github.com/user-attachments/assets/114ffa29-12b7-46e2-b120-146a02996f13">
                 </div>                
