@@ -159,7 +159,6 @@
                         <li>선택한 수량 변경이 가능하고, 체크박스를 통해 선택 후 장바구니에서 삭제가 가능합니다.</li>
                     </ul>
                     <img width="50%" alt="장바구니1" src="https://github.com/user-attachments/assets/e8710d19-1506-4d19-a88f-6bdb049ec58c">
-                    <img width="50%" alt="장바구니2" src="https://github.com/user-attachments/assets/b869c039-df61-4082-a222-dad1af09282f">
                 </div>
                  <div style= "text-align:left;">
                     <h3>관리자 페이지 배송조회</h3>
